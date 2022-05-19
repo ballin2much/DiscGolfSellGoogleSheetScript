@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+      <script>
+      // Prevent forms from submitting.
+        function preventFormSubmit() {
+          var forms = document.querySelectorAll('form');
+          for (var i = 0; i < forms.length; i++) {
+            forms[i].addEventListener('submit', function(event) {
+              event.preventDefault();
+            });
+          }
+        }
+        window.addEventListener('load', preventFormSubmit);
+
+        function handleFormSubmit(formObject) {
+            document.getElementById("updatedLink").innerHTML = "<p>Waiting on link...</p>"
+            google.script.run.withSuccessHandler(updateLink).createSheet(formObject["url"].value) 
+          }
+
+        function updateLink(url) {
+          let div = document.getElementById("updatedLink");
+          div.innerHTML = "<p>Here is the link to your spreadsheet:</p><a href='" + url + "'>"+url+"</a>";
+        }
+      </script>
+      <title>Disc Spreadsheet Script</title>
+  </head>
+  <body>
+    <h2>What is this?</h2>
+    <p>This is a Google Apps Script I wrote that automates the creation of a shareable Google Sheet that can be used for online disc sales.</p>
+    <h2>How to use?</h2>
+    <p>To use this script you will need a Google Drive folder filled with PNG or JPEG images of discs. For the the script to work you need to ensure the titles of the files are named a specific way. The naming convention is: <code>DiscName-Condition-Price-.png</code>. So an image titled <code>Destroyer-3/10-15-.png</code> would indicate a Star Destroyer with condition 3/10 priced at $15.<br>
+    Then all you need to do is copy the Google Drive link for the folder, paste it in, and hit submit.</p>
+    <h2>Anything else I need to know?</h2>
+    <p>Just note that all of the images in the folder will have their shared permissions in Google drive to everyone with the link. So ensure you don't have any pictures saved in the folder you don't want to share.</p>
+    <a href="https://github.com/ballin2much/DiscGolfSellGoogleSheetScript">Here is the GithubLink if you want to check the code.</a>
+    <br>
+    <br>
+    <form id="myForm" onsubmit="handleFormSubmit(this)">
+      <label for="url">Google Drive Folder URL:</label><br>
+      <input type="url" id="url" name="url" placeholder="https://drive.google.com/drive/folders..." pattern="https://drive[.]google[.]com/drive/folders/.*" required><br>
+      <input type="submit" value="Submit"/>
+    </form> 
+    <div id="updatedLink"></div>
+  </body>
+</html>
